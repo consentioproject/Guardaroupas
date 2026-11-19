@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1814" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Guarda-roupa">
+  <title>Guarda-roupa</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Guarda-roupa</h1>
+    <div class="top-actions">
+      <button id="addBtn" class="pill-btn" aria-label="Adicionar peça">＋ Peça</button>
+      <button id="menuBtn" class="icon-btn" aria-label="Backup e dados">⋯</button>
+    </div>
+  </header>
+
+  <main id="view" aria-live="polite"></main>
+
+  <nav class="tabbar" aria-label="Seções">
+    <button data-tab="today"><span>✨</span>Hoje</button>
+    <button data-tab="closet"><span>👚</span>Armário</button>
+    <button data-tab="history"><span>🗓</span>Histórico</button>
+  </nav>
+
+  <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
+  <input id="galleryInput" type="file" accept="image/*" multiple hidden>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
