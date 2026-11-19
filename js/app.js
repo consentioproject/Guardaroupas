@@ -1,4 +1,7 @@
+import * as auth from './auth.js';
 import * as db from './db.js';
+import { $, h } from './dom.js';
+import { showLogin } from './login.js';
 import { CATEGORIES, COLORS, OCCASIONS, WARMTH, catById, colorById, occById } from './catalog.js';
 import { detectColor, resizeImage } from './colors.js';
 import { alternatives, describeTemp, evaluate, suggest } from './outfit.js';
@@ -6,23 +9,7 @@ import { MANUAL_TEMPS, getWeather } from './weather.js';
 
 /* ---------- utilidades ---------- */
 
-const $ = (sel) => document.querySelector(sel);
-
-function h(tag, props, ...children) {
-  const el = document.createElement(tag);
-  for (const [k, v] of Object.entries(props || {})) {
-    if (v == null || v === false) continue;
-    if (k === 'class') el.className = v;
-    else if (k === 'style') Object.assign(el.style, v);
-    else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
-    else el.setAttribute(k, v === true ? '' : v);
-  }
-  for (const c of children.flat(Infinity)) {
-    if (c == null || c === false) continue;
-    el.append(c.nodeType ? c : document.createTextNode(c));
-  }
-  return el;
-}
+let currentUser = null; // null no modo local (sem login)
 
 const store = {
   get(key, fallback) {
@@ -494,11 +481,13 @@ function openMenu() {
   importInput.addEventListener('change', () => { if (importInput.files[0]) { close(); importBackup(importInput.files[0]); } });
   dlg.append(h('div', { class: 'body' },
     h('h2', {}, 'Seus dados'),
+    currentUser && h('p', { class: 'hint' }, `Conectado como ${currentUser.email}`),
     h('p', { class: 'hint' }, 'Fotos e histórico ficam guardados só neste aparelho, dentro do navegador. Faça backup de vez em quando — limpar os dados do navegador apaga tudo.'),
     h('div', { class: 'pick' },
       h('button', { class: 'btn', onClick: () => { close(); exportBackup(); } }, '⬇️  Exportar backup'),
       h('button', { class: 'btn', onClick: () => importInput.click() }, '⬆️  Importar backup'),
       importInput,
+      currentUser && h('button', { class: 'btn danger', onClick: async () => { await auth.signOut(); location.reload(); } }, 'Sair da conta'),
       h('button', { class: 'btn', onClick: close }, 'Fechar'))));
   dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
   document.body.append(dlg);
@@ -519,6 +508,18 @@ for (const id of ['#cameraInput', '#galleryInput']) {
 }
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+// Porta de entrada: com login configurado, ninguém vê o app sem entrar.
+// Os dados locais ficam separados por usuário (vários contas no mesmo navegador).
+if (auth.enabled) {
+  auth.onEvent((event) => {
+    if (event === 'SIGNED_OUT' && currentUser) location.reload();
+    if (event === 'PASSWORD_RECOVERY') showLogin('recovery');
+  }).catch(() => {});
+  currentUser = await auth.init();
+  if (!currentUser) currentUser = await showLogin();
+  db.useNamespace(currentUser.id);
+}
 
 await load();
 render();

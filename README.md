@@ -7,6 +7,19 @@ App (PWA) para fotografar suas roupas e receber sugestões de looks para o dia.
 - **Histórico**: registre o que vestiu ("Vou usar hoje") e veja as peças que estão há mais tempo paradas.
 - **Privacidade**: fotos e histórico ficam só no seu aparelho (IndexedDB). A única chamada externa é a previsão do tempo (Open-Meteo), com coordenadas arredondadas e só no modo "Auto". Há exportar/importar backup no menu ⋯.
 
+## Login (opcional)
+
+A tela de login (entrar, criar conta, esqueci a senha) usa o **Supabase Auth** e fica **desligada** enquanto `js/config.js` estiver com `SUPABASE_URL` e `SUPABASE_KEY` vazios: o app roda em "modo local", sem conta.
+
+Para ligar:
+
+1. Crie (ou escolha) um projeto no Supabase **dedicado a este app**. Não reaproveite o de outro produto: os usuários ficam todos na mesma base.
+2. Preencha `js/config.js` com a URL do projeto e a chave **publishable** (pública por design; nunca a `service_role`).
+3. No painel do Supabase, em *Authentication > URL Configuration*, ponha o endereço publicado do app em **Site URL** e em **Redirect URLs**. Sem isso, os links dos e-mails de confirmação e de redefinição de senha levam ao lugar errado.
+4. Em *Authentication > Providers > Email*, decida se exige confirmação de e-mail.
+
+Com o login ligado, o app não abre sem entrar, e o armário local é separado por usuário no mesmo navegador. Por enquanto o login só identifica quem é você: fotos e histórico continuam no aparelho, sem sincronizar.
+
 ## Rodar
 
 Não há build nem dependências: são arquivos estáticos.

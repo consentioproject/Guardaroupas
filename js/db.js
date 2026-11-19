@@ -1,11 +1,17 @@
 // Armazenamento local (IndexedDB). As fotos ficam como Blob, direto no aparelho.
 
-const DB_NAME = 'guardaroupas';
+let dbName = 'guardaroupas';
 let dbPromise;
+
+// Com login, cada usuário tem o próprio banco local. Chamar antes do primeiro acesso.
+export function useNamespace(userId) {
+  dbName = `guardaroupas-${userId}`;
+  dbPromise = undefined;
+}
 
 function open() {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
+    const req = indexedDB.open(dbName, 1);
     req.onupgradeneeded = () => {
       const db = req.result;
       db.createObjectStore('items', { keyPath: 'id' });
