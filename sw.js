@@ -1,11 +1,11 @@
 // Service worker: deixa o app abrir offline. Rede primeiro (para pegar atualizações),
 // cache como reserva. Só trata requisições do próprio site.
 
-const CACHE = 'guardaroupas-v2';
+const CACHE = 'guardaroupas-v3';
 const ASSETS = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest',
   'js/app.js', 'js/catalog.js', 'js/db.js', 'js/colors.js', 'js/weather.js', 'js/outfit.js',
-  'js/dom.js', 'js/config.js', 'js/auth.js', 'js/login.js',
+  'js/dom.js', 'js/config.js', 'js/auth.js', 'js/login.js', 'js/tryon.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 

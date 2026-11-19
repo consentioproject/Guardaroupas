@@ -11,11 +11,14 @@ export function useNamespace(userId) {
 
 function open() {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(dbName, 1);
+    const req = indexedDB.open(dbName, 2);
     req.onupgradeneeded = () => {
       const db = req.result;
-      db.createObjectStore('items', { keyPath: 'id' });
-      db.createObjectStore('wears', { keyPath: 'id' });
+      for (const name of ['items', 'wears']) {
+        if (!db.objectStoreNames.contains(name)) db.createObjectStore(name, { keyPath: 'id' });
+      }
+      // v2: configurações soltas (ex.: foto do corpo para o provador), chave → valor
+      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -36,4 +39,7 @@ async function run(store, mode, fn) {
 export const getAll = (store) => run(store, 'readonly', (s) => s.getAll());
 export const put = (store, value) => run(store, 'readwrite', (s) => s.put(value));
 export const remove = (store, id) => run(store, 'readwrite', (s) => s.delete(id));
-export const uid = () => crypto.randomUUID();
+export const getMeta = (key) => run('meta', 'readonly', (s) => s.get(key));
+export const setMeta = (key, value) => run('meta', 'readwrite', (s) => s.put(value, key));
+export const delMeta = (key) => run('meta', 'readwrite', (s) => s.delete(key));
+export const uid =() => crypto.randomUUID();

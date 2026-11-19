@@ -171,6 +171,19 @@ body.auth { padding-bottom: 24px; }
 .auth-links { display: flex; justify-content: center; gap: 20px; margin-top: 18px; }
 .link { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 6px; }
 
+/* Provador IA */
+.btn.try { margin-top: 10px; }
+.sheet h2 { margin-bottom: 6px; }
+.sheet .preview.result { max-height: 60dvh; }
+.sheet a.btn { color: inherit; text-decoration: none; text-align: center; display: grid; place-items: center; }
+.loading { text-align: center; padding: 24px 0 4px; }
+.spinner {
+  width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%;
+  border: 4px solid var(--line); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%); z-index: 20;
   bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 16px); white-space: nowrap;

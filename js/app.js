@@ -2,6 +2,7 @@ import * as auth from './auth.js';
 import * as db from './db.js';
 import { $, h } from './dom.js';
 import { showLogin } from './login.js';
+import { manageBodyPhoto, startTryOn } from './tryon.js';
 import { CATEGORIES, COLORS, OCCASIONS, WARMTH, catById, colorById, occById } from './catalog.js';
 import { detectColor, resizeImage } from './colors.js';
 import { alternatives, describeTemp, evaluate, suggest } from './outfit.js';
@@ -218,6 +219,7 @@ function viewToday() {
       h('div', { class: 'actions' },
         h('button', { class: 'btn', onClick: () => { newOutfit(); render(); } }, 'Outra sugestão'),
         h('button', { class: 'btn primary', onClick: wearToday }, 'Vou usar hoje')),
+      h('button', { class: 'btn block try', onClick: () => startTryOn(o.slots) }, '✨ Provar em mim (IA)'),
     ),
     h('p', { class: 'hint' }, 'Toque numa peça para trocar só ela.'),
   );
@@ -487,6 +489,7 @@ function openMenu() {
       h('button', { class: 'btn', onClick: () => { close(); exportBackup(); } }, '⬇️  Exportar backup'),
       h('button', { class: 'btn', onClick: () => importInput.click() }, '⬆️  Importar backup'),
       importInput,
+      h('button', { class: 'btn', onClick: () => { close(); manageBodyPhoto(); } }, '🧍  Foto do corpo (provador IA)'),
       currentUser && h('button', { class: 'btn danger', onClick: async () => { await auth.signOut(); location.reload(); } }, 'Sair da conta'),
       h('button', { class: 'btn', onClick: close }, 'Fechar'))));
   dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
